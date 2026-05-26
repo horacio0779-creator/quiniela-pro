@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiniela Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#08080e; --surf:#111119; --card:#19192a; --brd:#232336;
+  --acc:#f5c440; --grn:#27ae60; --red:#e74c3c;
+  --txt:#e0e0f0; --mut:#50508a;
+  --mat:#4a9eff; --vesp:#f5c440; --noc:#b07cff;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--txt); font-family:'DM Sans',sans-serif; min-height:100vh; }
+
+/* HEADER */
+header { background:var(--surf); border-bottom:1px solid var(--brd); padding:11px 14px;
+  display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+.logo { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:3px; color:var(--acc); }
+.subtit { font-size:9px; color:var(--mut); letter-spacing:2px; text-transform:uppercase; }
+#cap-hdr { font-family:'Bebas Neue',sans-serif; font-size:20px; color:var(--acc); line-height:1; text-align:right; }
+#atr-hdr { font-size:9px; color:var(--mut); font-family:'DM Mono',monospace; text-align:right; }
+
+/* TABS */
+.tabs { display:flex; background:var(--surf); border-bottom:1px solid var(--brd); overflow-x:auto; scrollbar-width:none; }
+.tabs::-webkit-scrollbar { display:none; }
+.tb { flex:1; min-width:55px; padding:11px 4px; background:none; border:none;
+  border-bottom:2px solid transparent; color:var(--mut); font-family:'DM Sans',sans-serif;
+  font-size:10px; font-weight:700; letter-spacing:.6px; text-transform:uppercase;
+  cursor:pointer; transition:.2s; white-space:nowrap; }
+.tb.on { color:var(--acc); border-bottom-color:var(--acc); }
+
+/* PANELS */
+.pnl { display:none; padding:12px; }
+.pnl.on { display:block; }
+
+/* CARD */
+.card { background:var(--card); border:1px solid var(--brd); border-radius:12px; padding:13px; margin-bottom:10px; }
+.ctit { font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:2px; color:var(--acc); margin-bottom:9px; }
+
+/* INPUTS */
+.fg { margin-bottom:9px; }
+.fg label { display:block; font-size:9px; color:var(--mut); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+.fg input, .fg select, .fg textarea {
+  width:100%; background:var(--surf); border:1px solid var(--brd); border-radius:8px;
+  padding:10px 11px; color:var(--txt); font-family:'DM Mono',monospace; font-size:14px; outline:none; }
+.fg input:focus, .fg select:focus, .fg textarea:focus { border-color:var(--acc); }
+.fg select option { background:var(--surf); }
+.fr2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+
+/* BUTTONS */
+.btn { width:100%; padding:11px; border:none; border-radius:9px;
+  font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:2px; cursor:pointer; margin-top:4px; }
+.bp { background:var(--acc); color:#08080e; }
+.bp:active { opacity:.85; }
+.bs { background:transparent; border:1px solid var(--brd); color:var(--mut);
+  font-size:11px; font-family:'DM Sans',sans-serif; font-weight:600; letter-spacing:1px; }
+.bd { background:rgba(231,76,60,.1); border:1px solid rgba(231,76,60,.25); color:var(--red);
+  font-size:11px; font-family:'DM Sans',sans-serif; font-weight:600; }
+
+/* ALERTS */
+.al { padding:9px 11px; border-radius:8px; font-size:11px; margin-bottom:9px; line-height:1.5; }
+.al-i { background:rgba(74,158,255,.07); border:1px solid rgba(74,158,255,.2); color:#4a9eff; }
+.al-w { background:rgba(245,196,64,.07); border:1px solid rgba(245,196,64,.2); color:var(--acc); }
+.al-s { background:rgba(39,174,96,.07); border:1px solid rgba(39,174,96,.2); color:var(--grn); }
+.al-r { background:rgba(231,76,60,.07); border:1px solid rgba(231,76,60,.2); color:var(--red); }
+
+/* BADGES */
+.bdg { display:inline-block; padding:2px 6px; border-radius:4px; font-size:9px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; }
+.bdg.mat { background:rgba(74,158,255,.13); color:var(--mat); border:1px solid rgba(74,158,255,.3); }
+.bdg.vesp { background:rgba(245,196,64,.13); color:var(--vesp); border:1px solid rgba(245,196,64,.3); }
+.bdg.noc { background:rgba(176,124,255,.13); color:var(--noc); border:1px solid rgba(176,124,255,.3); }
+
+/* CAPITAL BAR */
+.cap-bar { background:var(--surf); border:1px solid var(--brd); border-radius:6px; overflow:hidden; height:8px; margin:6px 0; }
+.cap-fill { height:100%; border-radius:6px; transition:width .5s, background .5s; }
+
+/* STATS */
+.sg3 { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-bottom:8px; }
+.sbox { background:var(--card); border:1px solid var(--brd); border-radius:9px; padding:10px 6px; text-align:center; }
+.sv { font-family:'Bebas Neue',sans-serif; font-size:20px; line-height:1; }
+.sl { font-size:9px; color:var(--mut); text-transform:uppercase; letter-spacing:1px; margin-top:2px; }
+.g { color:var(--grn); } .r { color:var(--red); } .y { color:var(--acc); }
+
+/* TROW */
+.trow { display:flex; align-items:center; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--brd); }
+.trow:last-child { border-bottom:none; }
+.trsub { font-size:10px; color:var(--mut); margin-top:1px; }
+
+/* TURNO BUTTONS */
+.tgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:10px; }
+.tbtn { padding:10px 4px; background:var(--surf); border:2px solid var(--brd); border-radius:10px;
+  color:var(--mut); font-family:'DM Sans',sans-serif; font-size:10px; font-weight:700;
+  cursor:pointer; text-align:center; line-height:1.6; transition:.2s; }
+.tbtn.mat.on { background:rgba(74,158,255,.15); color:var(--mat); border-color:var(--mat); }
+.tbtn.vesp.on { background:rgba(245,196,64,.15); color:var(--vesp); border-color:var(--vesp); }
+.tbtn.noc.on { background:rgba(176,124,255,.15); color:var(--noc); border-color:var(--noc); }
+
+/* NUM BOX */
+.nbox { background:var(--surf); border:1px solid var(--brd); border-radius:10px; padding:13px; text-align:center; margin-bottom:8px; }
+.nbox-num { font-family:'Bebas Neue',sans-serif; font-size:64px; color:var(--acc); line-height:1; letter-spacing:4px; }
+.nbox-dias { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--red); }
+
+/* ATR TABLE */
+.atr-tbl { width:100%; border-collapse:collapse; font-size:12px; }
+.atr-tbl th { font-size:9px; color:var(--mut); text-transform:uppercase; letter-spacing:1px; padding:4px 3px; border-bottom:1px solid var(--brd); text-align:left; }
+.atr-tbl td { padding:6px 3px; border-bottom:1px solid rgba(35,35,54,.7); vertical-align:middle; }
+.atr-tbl tr:last-child td { border-bottom:none; }
+.atr-n { font-family:'Bebas Neue',sans-serif; font-size:20px; color:var(--acc); line-height:1; }
+.abar { background:var(--surf); border-radius:3px; height:4px; overflow:hidden; width:44px; }
+.abar-i { height:100%; border-radius:3px; background:var(--red); }
+
+/* JUGADAS TABLE */
+.jd-tbl { width:100%; border-collapse:collapse; font-size:11px; margin-bottom:8px; }
+.jd-tbl th { font-size:9px; color:var(--mut); text-transform:uppercase; letter-spacing:.8px; padding:4px 3px; border-bottom:1px solid var(--brd); text-align:center; }
+.jd-tbl td { padding:7px 3px; border-bottom:1px solid rgba(35,35,54,.7); text-align:center; vertical-align:middle; }
+.jd-tbl tr:last-child td { border-bottom:none; }
+.jd-num { font-family:'Bebas Neue',sans-serif; font-size:20px; color:var(--acc); line-height:1; }
+.jd-imp { font-family:'DM Mono',monospace; font-size:12px; font-weight:700; }
+.jd-tot { background:rgba(245,196,64,.06); border:1px solid rgba(245,196,64,.2); border-radius:8px;
+  padding:10px 12px; display:flex; justify-content:space-between; align-items:center; }
+.jd-tot .lbl { font-size:10px; color:var(--mut); text-transform:uppercase; letter-spacing:1px; }
+.jd-tot .val { font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--acc); }
+
+/* HISTORIAL */
+.ji { background:var(--surf); border:1px solid var(--brd); border-radius:10px; padding:10px; margin-bottom:6px; }
+.jirow { display:flex; align-items:center; gap:7px; }
+.jnum { font-family:'Bebas Neue',sans-serif; font-size:26px; color:var(--acc); min-width:36px; text-align:center; line-height:1; }
+.jinf { flex:1; }
+.jfec { font-size:10px; color:var(--mut); font-family:'DM Mono',monospace; }
+.jdet { font-size:10px; color:var(--grn); margin-top:1px; }
+.jres { text-align:right; font-family:'Bebas Neue',sans-serif; font-size:15px; }
+.jres.win { color:var(--grn); } .jres.lose { color:var(--red); } .jres.pend { color:var(--mut); }
+.delbtn { background:none; border:none; color:var(--mut); cursor:pointer; font-size:13px; padding:2px; }
+.frow { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:9px; }
+.fc { padding:4px 8px; border-radius:12px; font-size:10px; font-weight:700;
+  border:1px solid var(--brd); background:transparent; color:var(--mut); cursor:pointer; }
+.fc.on { background:var(--card); color:var(--txt); border-color:var(--acc); }
+
+/* BOTONES RESULTADO */
+.res-btns { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:7px; }
+.btn-g { padding:9px; background:rgba(39,174,96,.12); border:1px solid rgba(39,174,96,.35);
+  border-radius:8px; color:#27ae60; font-family:'Bebas Neue',sans-serif; font-size:14px; cursor:pointer; }
+.btn-p { padding:9px; background:rgba(231,76,60,.1); border:1px solid rgba(231,76,60,.3);
+  border-radius:8px; color:#e74c3c; font-family:'Bebas Neue',sans-serif; font-size:14px; cursor:pointer; }
+
+/* TICKET OVERLAY */
+#ov-tick { display:none; position:fixed; inset:0; background:rgba(8,8,14,.93); z-index:500; overflow-y:auto; padding:14px; }
+.tw { max-width:360px; margin:0 auto; }
+.ticket { background:#fff; color:#111; border-radius:8px; font-family:'DM Mono',monospace; overflow:hidden; }
+.tk-head { background:#111; color:#fff; padding:12px; text-align:center; }
+.tk-logo { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:4px; color:#f5c440; }
+.tk-sub { font-size:9px; letter-spacing:2px; color:#aaa; }
+.tk-date { font-size:10px; color:#aaa; margin-top:4px; }
+.tk-body { padding:10px 12px; }
+.tk-tbl { width:100%; border-collapse:collapse; font-size:11px; }
+.tk-tbl th { font-size:8px; color:#999; text-transform:uppercase; letter-spacing:1px; padding:4px 2px; border-bottom:2px solid #e0e0e0; text-align:center; }
+.tk-tbl th:first-child { text-align:left; }
+.tk-tbl td { padding:7px 2px; border-bottom:1px dashed #eee; text-align:center; vertical-align:middle; }
+.tk-tbl td:first-child { text-align:left; }
+.tk-tbl tr:last-child td { border-bottom:none; }
+.tk-num { font-family:'Bebas Neue',sans-serif; font-size:22px; color:#111; line-height:1; }
+.tk-turn { font-size:9px; font-weight:700; letter-spacing:1px; text-transform:uppercase; }
+.tk-turn.mat { color:#2a7fd4; } .tk-turn.vesp { color:#b8920a; } .tk-turn.noc { color:#7a3fcf; }
+.tk-imp { font-family:'DM Mono',monospace; font-size:12px; font-weight:700; }
+.tk-res { font-family:'Bebas Neue',sans-serif; font-size:13px; }
+.tk-res.win { color:#27ae60; } .tk-res.lose { color:#e74c3c; } .tk-res.pend { color:#aaa; }
+.tk-tot { background:#f5f5f5; padding:10px 12px; }
+.tk-tr { display:flex; justify-content:space-between; padding:3px 0; }
+.tk-tr span:first-child { font-size:9px; color:#888; text-transform:uppercase; letter-spacing:1px; }
+.tk-tr span:last-child { font-family:'Bebas Neue',sans-serif; font-size:17px; }
+.tk-cap { padding:8px 12px; background:#fffbea; border-top:1px solid #f0e0a0; }
+.tk-cap .tk-tr { font-size:11px; } .tk-cap .tk-tr span:last-child { font-family:'DM Sans',sans-serif; font-weight:700; font-size:13px; }
+.pnet { color:#27ae60; } .nnet { color:#e74c3c; }
+.tk-foot { text-align:center; padding:8px; font-size:8px; color:#bbb; border-top:2px dashed #eee; }
+.tclose { width:100%; padding:10px; background:var(--acc); border:none; border-radius:8px;
+  font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:2px; cursor:pointer; margin-top:10px; color:#08080e; }
+.tshare { width:100%; padding:8px; background:transparent; border:1px solid var(--brd); border-radius:8px;
+  font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600; color:var(--mut); cursor:pointer; margin-top:5px; }
+
+/* TICKET QUINIELERO */
+#ov-q { display:none; position:fixed; inset:0; background:rgba(8,8,14,.95); z-index:500; overflow-y:auto; padding:14px; }
+.tq-head { background:#111; color:#fff; padding:14px; text-align:center; }
+.tq-logo { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:3px; color:#f5c440; }
+.tq-sub { font-size:9px; letter-spacing:2px; color:#aaa; margin-top:2px; }
+.tq-fecha { font-size:11px; color:#ddd; margin-top:5px; font-family:'DM Mono',monospace; }
+.tq-body { padding:14px; }
+.tq-row { display:flex; align-items:flex-start; border-bottom:2px solid #111; padding:10px 0; }
+.tq-row:last-child { border-bottom:none; }
+.tq-num { font-family:'Bebas Neue',sans-serif; font-size:38px; color:#111; line-height:1; min-width:58px; }
+.tq-info { flex:1; padding-left:12px; }
+.tq-turn { font-size:9px; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:2px 5px; border-radius:3px; display:inline-block; margin-bottom:4px; }
+.tq-turn.mat { background:#e8f0ff; color:#2a5fc4; }
+.tq-turn.vesp { background:#fff8e0; color:#8a6500; }
+.tq-turn.noc { background:#f0e8ff; color:#5a2fa0; }
+.tq-linea { display:flex; justify-content:space-between; font-size:12px; padding:1px 0; }
+.tq-linea .tipo { color:#555; } .tq-linea .imp { font-weight:700; color:#111; }
+.tq-tot-box { background:#f5f5f5; padding:12px 14px; border-top:2px solid #111; display:flex; justify-content:space-between; align-items:center; }
+.tq-tot-box .lbl { font-size:9px; color:#888; text-transform:uppercase; letter-spacing:1px; }
+.tq-tot-box .val { font-family:'Bebas Neue',sans-serif; font-size:26px; color:#111; }
+.tq-foot { text-align:center; padding:8px; font-size:8px; color:#aaa; border-top:1px dashed #ddd; }
+
+/* MODAL GANANCIA */
+#ov-gan { display:none; position:fixed; inset:0; background:rgba(8,8,14,.96); z-index:600; display:none; align-items:center; justify-content:center; padding:16px; }
+#ov-gan.show { display:flex; }
+.gan-card { background:var(--card); border:1px solid var(--brd); border-radius:14px; padding:18px; width:100%; max-width:340px; }
+
+/* LECTURA IMAGEN */
+#ov-img { display:none; position:fixed; inset:0; background:rgba(8,8,14,.97); z-index:600; overflow-y:auto; padding:14px; }
+.num-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:12px; }
+.num-inp-box { text-align:center; }
+.num-inp-box .pos { font-size:9px; color:var(--mut); margin-bottom:2px; }
+.num-inp-box input { width:100%; background:var(--surf); border:1px solid var(--brd); border-radius:6px;
+  padding:8px 2px; color:var(--txt); font-family:'DM Mono',monospace; font-size:15px; text-align:center; outline:none; }
+.num-inp-box input:focus { border-color:var(--acc); }
+
+/* MISC */
+.spin { display:inline-block; width:12px; height:12px; border:2px solid var(--brd); border-top-color:var(--acc);
+  border-radius:50%; animation:rot .7s linear infinite; vertical-align:middle; margin-right:4px; }
+@keyframes rot { to { transform:rotate(360deg); } }
+.emp { text-align:center; padding:26px 12px; color:var(--mut); font-size:12px; }
+.dot { display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--grn);
+  margin-right:3px; animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.vn { font-family:'DM Mono',monospace; font-size:10px; padding:2px 5px; border-radius:4px;
+  background:var(--surf); border:1px solid var(--brd); color:var(--mut); display:inline-block; margin:2px; }
+.vn.match { background:rgba(39,174,96,.2); border-color:var(--grn); color:var(--grn); font-weight:700; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">🎰 QUINIELA PRO</div>
+    <div class="subtit">Ciudad de Bs. As.</div>
+  </div>
+  <div>
+    <div id="cap-hdr">$--</div>
+    <div id="atr-hdr"><span class="dot"></span><span id="atr-txt">--</span></div>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tb on"  onclick="goTab('cap',this)">Capital</button>
+  <button class="tb"     onclick="goTab('atr',this)">Atrasados</button>
+  <button class="tb"     onclick="goTab('dia',this)">Jugadas</button>
+  <button class="tb"     onclick="goTab('sort',this)">Sorteo</button>
+  <button class="tb"     onclick="goTab('hist',this)">Historial</button>
+</div>
+
+<!-- ══ CAPITAL ══════════════════════════════════ -->
+<div id="pnl-cap" class="pnl on">
+  <div class="card">
+    <div class="ctit">💰 Mi Capital</div>
+    <div class="fg">
+      <label>Capital disponible ($)</label>
+      <input type="number" id="cap-in" placeholder="Ej: 45000">
+    </div>
+    <button class="btn bp" onclick="guardarCapital()">GUARDAR CAPITAL</button>
+    <div id="cap-bar-box" style="display:none; margin-top:8px">
+      <div class="cap-bar"><div class="cap-fill" id="cap-fill"></div></div>
+      <div id="cap-det" style="font-size:10px; color:var(--mut); font-family:'DM Mono',monospace; margin-top:3px"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctit">🎯 Montos por Sorteo</div>
+    <div class="al al-i">Estructura fija: $200 cabeza · $200 a los 5 · $600 a los 10 = $1.000/sorteo. Ajustá si ganaste premio.</div>
+    <div class="fr2" style="margin-bottom:8px">
+      <div class="fg"><label>A la Cabeza ($)</label><input type="number" id="m-cab" placeholder="200"></div>
+      <div class="fg"><label>A los 5 ($)</label><input type="number" id="m-a5" placeholder="200"></div>
+    </div>
+    <div class="fg"><label>A los 10 ($)</label><input type="number" id="m-a10" placeholder="600"></div>
+    <button class="btn bp" onclick="guardarMontos()">GUARDAR MONTOS</button>
+    <div id="montos-prev" style="margin-top:8px"></div>
+  </div>
+  <div class="sg3">
+    <div class="sbox"><div class="sv y" id="ds-ap">$0</div><div class="sl">Apostado</div></div>
+    <div class="sbox"><div class="sv g" id="ds-ga">$0</div><div class="sl">Ganado</div></div>
+    <div class="sbox"><div class="sv" id="ds-ne" style="color:var(--mut)">$0</div><div class="sl">Neto</div></div>
+  </div>
+  <div class="card">
+    <div class="ctit">📊 Por Turno</div>
+    <div id="turno-stats"></div>
+  </div>
+  <button class="btn bs" onclick="exportCSV()" style="margin-top:2px">📋 Exportar CSV</button>
+  <button class="btn bs" onclick="copiarMov()" style="margin-top:5px">📄 Copiar movimientos</button>
+  <button class="btn bd" onclick="resetTodo()" style="margin-top:5px">🗑 Borrar todo</button>
+</div>
+
+<!-- ══ ATRASADOS ════════════════════════════════ -->
+<div id="pnl-atr" class="pnl">
+  <div id="atr-cargando" class="al al-w"><span class="spin"></span>Actualizando atrasados...</div>
+  <div id="atr-main" style="display:none">
+    <div class="card">
+      <div class="ctit">🎯 Elegí el turno a jugar</div>
+      <div class="tgrid">
+        <button class="tbtn mat on" id="tsb-mat" onclick="selTurno('mat')">☀️<br>Matutina</button>
+        <button class="tbtn vesp"   id="tsb-vesp" onclick="selTurno('vesp')">🌤<br>Vespertina</button>
+        <button class="tbtn noc"    id="tsb-noc"  onclick="selTurno('noc')">🌙<br>Nocturna</button>
+      </div>
+      <div class="nbox">
+        <div style="font-size:9px; color:var(--mut); text-transform:uppercase; letter-spacing:2px; margin-bottom:3px" id="nbox-lbl">Más atrasado · Matutina</div>
+        <div class="nbox-num" id="nbox-num">--</div>
+        <div style="margin:4px 0"><span class="bdg mat" id="nbox-bdg">MAT</span></div>
+        <div><span class="nbox-dias" id="nbox-dias">--</span> <span style="font-size:11px; color:var(--mut)">días sin salir a la cabeza</span></div>
+        <div style="font-size:10px; color:var(--mut); font-family:'DM Mono',monospace; margin-top:3px">Última vez: <span id="nbox-ult">--</span></div>
+      </div>
+      <button class="btn bp" onclick="irAJugar()">▶ JUGAR ESTE NÚMERO</button>
+    </div>
+    <div class="card">
+      <div class="ctit">📋 A la Cabeza — Resumen</div>
+      <div style="font-size:9px; color:var(--mut); margin-bottom:6px" id="atr-src"></div>
+      <table class="atr-tbl" id="atr-t1"></table>
+    </div>
+    <div class="card">
+      <div class="ctit">📋 Dos Cifras — a los 20</div>
+      <table class="atr-tbl" id="atr-t2"></table>
+    </div>
+  </div>
+</div>
+
+<!-- ══ JUGADAS ══════════════════════════════════ -->
+<div id="pnl-dia" class="pnl">
+  <div class="card">
+    <div class="ctit">🎯 Número a Jugar</div>
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px">
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:52px; color:var(--acc); line-height:1" id="jug-num">--</div>
+      <div>
+        <span class="bdg" id="jug-bdg">--</span>
+        <div style="font-size:10px; color:var(--mut); margin-top:3px"><span id="jug-dias">--</span> días sin salir</div>
+      </div>
+    </div>
+    <div class="fg"><label>Fecha</label><input type="date" id="dia-fecha"></div>
+  </div>
+  <div class="card">
+    <div class="ctit">☑ Turnos a Jugar Hoy</div>
+    <div class="tgrid">
+      <button class="tbtn mat on" id="bt-mat"  onclick="togTurno('mat')">☀️<br>Matutina</button>
+      <button class="tbtn vesp on" id="bt-vesp" onclick="togTurno('vesp')">🌤<br>Vespertina</button>
+      <button class="tbtn noc on"  id="bt-noc"  onclick="togTurno('noc')">🌙<br>Nocturna</button>
+    </div>
+    <button class="btn bp" onclick="generarTabla()">VER TABLA Y TOTAL →</button>
+  </div>
+  <div id="tabla-box" style="display:none">
+    <div class="card">
+      <div class="ctit">📋 Tabla de Jugadas</div>
+      <div class="al al-w" id="tabla-info"></div>
+      <table class="jd-tbl" id="jd-tbl"></table>
+      <div class="jd-tot" style="margin-top:8px">
+        <div><div class="lbl">Total a depositar</div><div class="val" id="jd-total">$0</div></div>
+        <div style="text-align:right"><div class="lbl">Sorteos</div><div class="val" id="jd-sort">0</div></div>
+      </div>
+    </div>
+    <button class="btn bp" onclick="confirmar()">✅ CONFIRMAR Y REGISTRAR</button>
+    <button class="btn bs" onclick="document.getElementById('tabla-box').style.display='none'" style="margin-top:5px">↩ Cambiar</button>
+  </div>
+</div>
+
+<!-- ══ SORTEO ════════════════════════════════════ -->
+<div id="pnl-sort" class="pnl">
+  <div class="card">
+    <div class="ctit">🔢 Cargar Resultado del Sorteo</div>
+    <div class="fr2">
+      <div class="fg"><label>Turno</label>
+        <select id="s-turno">
+          <option value="mat">Matutina</option>
+          <option value="vesp">Vespertina</option>
+          <option value="noc">Nocturna</option>
+        </select>
+      </div>
+      <div class="fg"><label>Fecha</label><input type="date" id="s-fecha"></div>
+    </div>
+    <!-- Opción imagen -->
+    <div style="margin-bottom:10px">
+      <label style="font-size:9px; color:var(--mut); text-transform:uppercase; letter-spacing:1px; display:block; margin-bottom:6px">📷 Cargar desde captura de imagen</label>
+      <div id="img-drop" onclick="document.getElementById('s-img').click()"
+        style="display:flex; align-items:center; gap:10px; padding:14px; background:var(--surf); border:2px dashed var(--brd); border-radius:10px; cursor:pointer">
+        <span style="font-size:28px">📷</span>
+        <div>
+          <div style="font-size:13px; font-weight:600; color:var(--txt)">Subir captura del extracto</div>
+          <div style="font-size:10px; color:var(--mut)">Foto o captura de pantalla</div>
+        </div>
+      </div>
+      <input type="file" id="s-img" accept="image/*" style="display:none" onchange="imagenCargada(this)">
+      <div id="img-prev-box" style="display:none; margin-top:8px; text-align:center">
+        <img id="img-thumb" style="max-width:100%; max-height:160px; border-radius:8px; border:1px solid var(--brd)">
+      </div>
+      <div id="img-leyendo" style="display:none; margin-top:8px" class="al al-w">
+        <span class="spin"></span> Leyendo números de la imagen...
+      </div>
+      <div id="img-leido" style="display:none; margin-top:8px" class="al al-s"></div>
+      <button id="btn-leer" class="btn bp" style="display:none; margin-top:8px; font-size:13px" onclick="leerImagen()">🔍 LEER IMAGEN AUTOMÁTICAMENTE</button>
+    </div>
+    <!-- Separador -->
+    <div style="display:flex; align-items:center; gap:8px; margin:10px 0">
+      <div style="flex:1; height:1px; background:var(--brd)"></div>
+      <div style="font-size:10px; color:var(--mut)">o escribí los números</div>
+      <div style="flex:1; height:1px; background:var(--brd)"></div>
+    </div>
+    <!-- Manual -->
+    <div class="fg">
+      <label>Números del extracto (1º al 20º separados por coma)</label>
+      <input type="text" id="s-nums" placeholder="Ej: 51, 18, 03, 77, 42...">
+      <div style="font-size:10px; color:var(--mut); margin-top:3px">1er número = cabeza · 2º–5º = a los 5 · 6º–10º = a los 10</div>
+    </div>
+    <button class="btn bp" onclick="verificar()">✅ VERIFICAR</button>
+  </div>
+  <div id="ver-res" style="display:none"></div>
+  <!-- Ticket quinielero -->
+  <div class="card">
+    <div class="ctit">🎫 Ticket para el Quinielero</div>
+    <div style="font-size:11px; color:var(--mut); margin-bottom:8px">Para mandar al quinielero con los números y montos.</div>
+    <div class="fg"><label>Fecha</label><input type="date" id="tq-fecha"></div>
+    <button class="btn bp" onclick="genTicketQ()">📋 GENERAR TICKET</button>
+  </div>
+  <!-- Pendientes -->
+  <div class="card" id="pend-card" style="display:none">
+    <div class="ctit">⏳ Jugadas Pendientes</div>
+    <div id="pend-list"></div>
+  </div>
+</div>
+
+<!-- ══ HISTORIAL ═════════════════════════════════ -->
+<div id="pnl-hist" class="pnl">
+  <div class="frow">
+    <button class="fc on" onclick="filtrar('todos',this)">Todos</button>
+    <button class="fc"    onclick="filtrar('mat',this)">Mat.</button>
+    <button class="fc"    onclick="filtrar('vesp',this)">Vesp.</button>
+    <button class="fc"    onclick="filtrar('noc',this)">Noc.</button>
+    <button class="fc"    onclick="filtrar('pend',this)">⏳</button>
+    <button class="fc"    onclick="filtrar('win',this)">✅</button>
+  </div>
+  <div id="hist-list"></div>
+  <button class="btn bp" style="margin-top:6px" onclick="genTicketHoy()">🎫 TICKET DE HOY</button>
+</div>
+
+<!-- ══ OVERLAYS ══════════════════════════════════ -->
+<!-- Ticket historial -->
+<div id="ov-tick">
+  <div class="tw">
+    <div class="ticket" id="tic-cont"></div>
+    <button class="tshare" onclick="compartirTick()">📤 Compartir</button>
+    <button class="tclose" onclick="cerrar('ov-tick')">✕ CERRAR</button>
+  </div>
+</div>
+
+<!-- Ticket quinielero -->
+<div id="ov-q">
+  <div class="tw">
+    <div id="tq-cont" style="background:#fff; color:#111; border-radius:8px; font-family:'DM Mono',monospace; overflow:hidden;"></div>
+    <button class="tshare" onclick="compartirTQ()">📤 Enviar al quinielero</button>
+    <button class="tclose" onclick="cerrar('ov-q')">✕ CERRAR</button>
+  </div>
+</div>
+
+<!-- Modal ganancia -->
+<div id="ov-gan">
+  <div class="gan-card" id="gan-cont"></div>
+</div>
+
+<!-- Lectura imagen -->
+<div id="ov-img">
+  <div style="max-width:400px; margin:0 auto">
+    <div style="font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--acc); letter-spacing:2px; margin-bottom:8px" id="img-titulo">📷 Leer extracto</div>
+    <img id="img-big" style="width:100%; border-radius:8px; border:1px solid var(--brd); margin-bottom:10px">
+    <div class="al al-w" style="margin-bottom:8px">Mirá la imagen y escribí los <strong>últimos 2 dígitos</strong> de cada número en orden (del 1º al 20º).<br><span style="font-size:10px">Ej: si ves 3982 → escribí 82</span></div>
+    <div class="num-grid" id="num-grid"></div>
+    <button class="btn bp" onclick="confirmarImagen()">✅ CONFIRMAR NÚMEROS</button>
+    <button class="btn bs" onclick="cerrar('ov-img')" style="margin-top:5px">Cancelar</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATOS ATRASADOS (tomboleros.com 23/05/2026)
+// ═══════════════════════════════════════════════
+var ATR_CAB = [
+  {turno:'mat',  num:'03', dias:28, ultima:'27/04/2026'},
+  {turno:'vesp', num:'09', dias:27, ultima:'28/04/2026'},
+  {turno:'noc',  num:'07', dias:63, ultima:'23/03/2026'}
+];
+var ATR_AMB = [
+  {turno:'mat',  num:'83', dias:30, ultima:'25/04/2026'},
+  {turno:'vesp', num:'52', dias:34, ultima:'21/04/2026'},
+  {turno:'noc',  num:'86', dias:28, ultima:'27/04/2026'}
+];
+var ATR_FECHA = '23/05/2026';
+
+// ═══════════════════════════════════════════════
+// CONSTANTES
+// ═══════════════════════════════════════════════
+var TL = {mat:'Matutina', vesp:'Vespertina', noc:'Nocturna'};
+var MCAB=70, MA5=14, MA10=7;
+
+// ═══════════════════════════════════════════════
+// ESTADO
+// ═══════════════════════════════════════════════
+var S = {capital:0, mCab:200, mA5:200, mA10:600, jugadas:[], sorteos:[]};
+var filtroH = 'todos';
+var turnoAtr = 'mat';
+var turnosJ = {mat:true, vesp:true, noc:true};
+var pendConf = [];
+
+function save() { try { localStorage.setItem('qp6', JSON.stringify(S)); } catch(e){} }
+function load() { try { var d=localStorage.getItem('qp6'); if(d) { var p=JSON.parse(d); for(var k in p) S[k]=p[k]; } } catch(e){} }
+
+// ═══════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════
+function goTab(n, el) {
+  var ps = document.querySelectorAll('.pnl');
+  for(var i=0;i<ps.length;i++) ps[i].classList.remove('on');
+  var ts = document.querySelectorAll('.tb');
+  for(var i=0;i<ts.length;i++) ts[i].classList.remove('on');
+  document.getElementById('pnl-'+n).classList.add('on');
+  el.classList.add('on');
+  if(n==='cap')  renderCap();
+  if(n==='atr')  renderAtr();
+  if(n==='dia')  renderDia();
+  if(n==='sort') renderSort();
+  if(n==='hist') renderHist();
+}
+
+// ═══════════════════════════════════════════════
+// CAPITAL
+// ═══════════════════════════════════════════════
+function capActual() {
+  return S.jugadas.reduce(function(a,j) {
+    if(j.salio==='si') return a+(j.ganancia||0)-j.monto;
+    if(j.salio==='no') return a-j.monto;
+    return a;
+  }, S.capital);
+}
+
+function updHdr() {
+  var c = capActual();
+  var el = document.getElementById('cap-hdr');
+  el.textContent = '$'+fmt(c);
+  el.style.color = c>=S.capital ? 'var(--grn)' : c>0 ? 'var(--acc)' : 'var(--red)';
+}
+
+function guardarCapital() {
+  var v = parseFloat(document.getElementById('cap-in').value)||0;
+  if(!v||v<=0){alert('Ingresá un capital válido');return;}
+  S.capital=v; save(); renderCap();
+  alert('✅ Capital guardado: $'+fmt(v));
+}
+
+function guardarMontos() {
+  var c=parseFloat(document.getElementById('m-cab').value)||0;
+  var a5=parseFloat(document.getElementById('m-a5').value)||0;
+  var a10=parseFloat(document.getElementById('m-a10').value)||0;
+  if(!c&&!a5&&!a10){alert('Ingresá al menos un monto');return;}
+  S.mCab=c; S.mA5=a5; S.mA10=a10; save(); renderCap();
+  alert('✅ Montos guardados');
+}
+
+function renderCap() {
+  var ci=document.getElementById('cap-in');
+  if(document.activeElement!==ci) ci.value=S.capital||'';
+  var mc=document.getElementById('m-cab'); if(document.activeElement!==mc) mc.value=S.mCab;
+  var ma5=document.getElementById('m-a5'); if(document.activeElement!==ma5) ma5.value=S.mA5;
+  var ma10=document.getElementById('m-a10'); if(document.activeElement!==ma10) ma10.value=S.mA10;
+
+  var capAct=capActual();
+  var bb=document.getElementById('cap-bar-box');
+  if(S.capital>0){
+    bb.style.display='block';
+    var pct=Math.max(0,Math.min(100,(capAct/S.capital)*100));
+    var f=document.getElementById('cap-fill');
+    f.style.width=pct+'%';
+    f.style.background=pct>60?'var(--grn)':pct>30?'var(--acc)':'var(--red)';
+    document.getElementById('cap-det').textContent='Capital actual: $'+fmt(capAct)+' ('+Math.round(pct)+'% del inicial $'+fmt(S.capital)+')';
+  } else bb.style.display='none';
+
+  var tot=S.mCab+S.mA5+S.mA10;
+  document.getElementById('montos-prev').innerHTML=
+    '<div style="background:var(--surf);border:1px solid var(--brd);border-radius:8px;padding:10px;font-size:12px;font-family:DM Mono,monospace">'+
+    '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--brd)"><span style="color:var(--mut)">Cabeza ×'+MCAB+'</span><span>$'+fmt(S.mCab)+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--brd)"><span style="color:var(--mut)">A los 5 ×'+MA5+'</span><span>$'+fmt(S.mA5)+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--brd)"><span style="color:var(--mut)">A los 10 ×'+MA10+'</span><span>$'+fmt(S.mA10)+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between;padding:5px 0;color:var(--acc);font-weight:700"><span>Total / sorteo</span><span>$'+fmt(tot)+'</span></div>'+
+    '</div>';
+
+  var js=S.jugadas;
+  var ap=js.reduce(function(a,j){return a+j.monto;},0);
+  var ga=js.reduce(function(a,j){return a+(j.ganancia||0);},0);
+  var ne=ga-ap;
+  document.getElementById('ds-ap').textContent='$'+fmt(ap);
+  document.getElementById('ds-ga').textContent='$'+fmt(ga);
+  var nel=document.getElementById('ds-ne');
+  nel.textContent=(ne>=0?'+':'')+'$'+fmt(Math.abs(ne));
+  nel.className='sv '+(ne>0?'g':ne<0?'r':'');
+
+  var th='';
+  ['mat','vesp','noc'].forEach(function(t){
+    var jt=js.filter(function(j){return j.turno===t;});
+    var ta=jt.reduce(function(a,j){return a+j.monto;},0);
+    var tg=jt.reduce(function(a,j){return a+(j.ganancia||0);},0);
+    var tn=tg-ta;
+    th+='<div class="trow"><div><span class="bdg '+t+'">'+TL[t]+'</span>'+
+      '<div class="trsub">'+jt.length+' jugada(s) · $'+fmt(ta)+'</div></div>'+
+      '<div style="font-family:DM Mono,monospace;font-size:11px;color:'+(tn>=0?'var(--grn)':'var(--red)')+'">'+
+      (tn>=0?'+':'')+'$'+fmt(Math.abs(tn))+'</div></div>';
+  });
+  document.getElementById('turno-stats').innerHTML=th||'<div class="emp">Sin jugadas</div>';
+  updHdr();
+}
+
+// ═══════════════════════════════════════════════
+// ATRASADOS
+// ═══════════════════════════════════════════════
+function renderAtr() {
+  document.getElementById('atr-cargando').style.display='block';
+  document.getElementById('atr-main').style.display='none';
+  fetchAtr();
+}
+
+function fetchAtr() {
+  var proxy='https://api.allorigins.win/get?url='+encodeURIComponent('https://tomboleros.com/atrasados-nacional');
+  fetch(proxy)
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var html=d.contents||'';
+      var tm={Matutina:'mat',Vespertina:'vesp',Nocturna:'noc'};
+      // Extraer datos de la tabla
+      var re=/\|\s*(Matutina|Vespertina|Nocturna)\s*\|[^|]*\|\s*(\d+)\s*\|[^|]*\|\s*(\d+)\s*\|[^|]*\|([^|]+)\|/g;
+      var m; var cab=[];
+      while((m=re.exec(html))!==null && cab.length<3){
+        if(tm[m[1]]){
+          cab.push({turno:tm[m[1]],num:(''+parseInt(m[2])).padStart(2,'0'),dias:parseInt(m[3]),ultima:m[4].trim()});
+        }
+      }
+      if(cab.length>=3){ ATR_CAB=cab; ATR_FECHA=new Date().toLocaleDateString('es-AR'); }
+      pintarAtr();
+    })
+    .catch(function(){ pintarAtr(); });
+}
+
+function pintarAtr() {
+  document.getElementById('atr-cargando').style.display='none';
+  document.getElementById('atr-main').style.display='block';
+  document.getElementById('atr-src').textContent='Fuente: tomboleros.com · '+ATR_FECHA;
+  document.getElementById('atr-txt').textContent='Atr: '+ATR_FECHA;
+  mostrarNumTurno(turnoAtr);
+
+  var maxC=Math.max.apply(null,ATR_CAB.map(function(x){return x.dias;}));
+  var h1='<tr><th>Turno</th><th>Nº</th><th>Días</th><th></th></tr>';
+  ATR_CAB.forEach(function(d){
+    h1+='<tr style="cursor:pointer" onclick="selTurno(\''+d.turno+'\')">'+
+      '<td><span class="bdg '+d.turno+'">'+TL[d.turno]+'</span></td>'+
+      '<td><span class="atr-n">'+d.num+'</span></td>'+
+      '<td style="font-family:DM Mono,monospace;font-size:11px;color:var(--red)">'+d.dias+'d</td>'+
+      '<td><div class="abar"><div class="abar-i" style="width:'+Math.round(d.dias/maxC*100)+'%"></div></div></td>'+
+      '</tr>';
+  });
+  document.getElementById('atr-t1').innerHTML=h1;
+
+  var maxA=Math.max.apply(null,ATR_AMB.map(function(x){return x.dias;}));
+  var h2='<tr><th>Turno</th><th>Ambo</th><th>Días</th><th>Última</th></tr>';
+  ATR_AMB.forEach(function(d){
+    h2+='<tr><td><span class="bdg '+d.turno+'">'+TL[d.turno]+'</span></td>'+
+      '<td><span class="atr-n">'+d.num+'</span></td>'+
+      '<td style="font-family:DM Mono,monospace;font-size:11px">'+d.dias+'d</td>'+
+      '<td style="font-size:10px;color:var(--mut)">'+d.ultima+'</td></tr>';
+  });
+  document.getElementById('atr-t2').innerHTML=h2;
+}
+
+function selTurno(t) {
+  turnoAtr=t;
+  ['mat','vesp','noc'].forEach(function(x){
+    document.getElementById('tsb-'+x).className='tbtn '+x+(x===t?' on':'');
+  });
+  mostrarNumTurno(t);
+}
+
+function mostrarNumTurno(t) {
+  var d=null;
+  for(var i=0;i<ATR_CAB.length;i++){if(ATR_CAB[i].turno===t){d=ATR_CAB[i];break;}}
+  if(!d) d={num:'--',dias:'--',ultima:'--',turno:t};
+  document.getElementById('nbox-lbl').textContent='Más atrasado · '+TL[t];
+  document.getElementById('nbox-num').textContent=d.num;
+  document.getElementById('nbox-bdg').textContent=TL[t].toUpperCase();
+  document.getElementById('nbox-bdg').className='bdg '+t;
+  document.getElementById('nbox-dias').textContent=d.dias;
+  document.getElementById('nbox-ult').textContent=d.ultima;
+}
+
+function irAJugar() {
+  var d=null;
+  for(var i=0;i<ATR_CAB.length;i++){if(ATR_CAB[i].turno===turnoAtr){d=ATR_CAB[i];break;}}
+  if(!d){alert('Sin datos');return;}
+  turnosJ={mat:false,vesp:false,noc:false};
+  turnosJ[d.turno]=true;
+  var ts=document.querySelectorAll('.tb');
+  for(var i=0;i<ts.length;i++) ts[i].classList.remove('on');
+  ts[2].classList.add('on');
+  var ps=document.querySelectorAll('.pnl');
+  for(var i=0;i<ps.length;i++) ps[i].classList.remove('on');
+  document.getElementById('pnl-dia').classList.add('on');
+  renderDia();
+  generarTabla();
+}
+
+// ═══════════════════════════════════════════════
+// JUGADAS
+// ═══════════════════════════════════════════════
+function renderDia() {
+  var hoy=new Date().toISOString().split('T')[0];
+  if(!document.getElementById('dia-fecha').value) document.getElementById('dia-fecha').value=hoy;
+  var hero=ATR_CAB.reduce(function(a,b){return b.dias>a.dias?b:a;},ATR_CAB[0]);
+  document.getElementById('jug-num').textContent=hero?hero.num:'--';
+  var bdg=document.getElementById('jug-bdg');
+  bdg.textContent=hero?TL[hero.turno]:'--';
+  bdg.className='bdg '+(hero?hero.turno:'');
+  document.getElementById('jug-dias').textContent=hero?hero.dias:'--';
+  ['mat','vesp','noc'].forEach(function(t){
+    document.getElementById('bt-'+t).className='tbtn '+t+(turnosJ[t]?' on':'');
+  });
+  document.getElementById('tabla-box').style.display='none';
+}
+
+function togTurno(t) {
+  turnosJ[t]=!turnosJ[t];
+  document.getElementById('bt-'+t).className='tbtn '+t+(turnosJ[t]?' on':'');
+}
+
+function generarTabla() {
+  var fecha=document.getElementById('dia-fecha').value;
+  if(!fecha){alert('Elegí una fecha');return;}
+  var activos=Object.keys(turnosJ).filter(function(t){return turnosJ[t];});
+  if(!activos.length){alert('Seleccioná al menos un turno');return;}
+  var tot=S.mCab+S.mA5+S.mA10;
+  var html='<tr><th style="text-align:left">Turno</th><th>Nº</th><th>Cab ×'+MCAB+'</th><th>A5 ×'+MA5+'</th><th>A10 ×'+MA10+'</th><th>Total</th></tr>';
+  pendConf=[];
+  var infoArr=[];
+  activos.forEach(function(t){
+    var d=null;
+    for(var i=0;i<ATR_CAB.length;i++){if(ATR_CAB[i].turno===t){d=ATR_CAB[i];break;}}
+    var num=d?d.num:'--';
+    html+='<tr>'+
+      '<td><span class="bdg '+t+'">'+TL[t].substring(0,3).toUpperCase()+'</span></td>'+
+      '<td><span class="jd-num">'+num+'</span></td>'+
+      '<td><span class="jd-imp">$'+fmt(S.mCab)+'</span></td>'+
+      '<td><span class="jd-imp">$'+fmt(S.mA5)+'</span></td>'+
+      '<td><span class="jd-imp">$'+fmt(S.mA10)+'</span></td>'+
+      '<td><strong style="color:var(--acc);font-family:DM Mono,monospace">$'+fmt(tot)+'</strong></td>'+
+      '</tr>';
+    pendConf.push({turno:t,num:num,fecha:fecha,mCab:S.mCab,mA5:S.mA5,mA10:S.mA10,monto:tot});
+    if(d) infoArr.push(TL[t]+': '+num+' ('+d.dias+'d)');
+  });
+  document.getElementById('jd-tbl').innerHTML=html;
+  document.getElementById('tabla-info').textContent=infoArr.join(' · ');
+  document.getElementById('jd-total').textContent='$'+fmt(tot*activos.length);
+  document.getElementById('jd-sort').textContent=activos.length;
+  document.getElementById('tabla-box').style.display='block';
+}
+
+function confirmar() {
+  if(!pendConf.length){alert('Sin jugadas');return;}
+  var n=0;
+  pendConf.forEach(function(j){
+    var dup=S.jugadas.some(function(x){return x.turno===j.turno&&x.fecha===j.fecha&&x.num===j.num&&x.salio==='pend';});
+    if(!dup){
+      S.jugadas.push({id:Date.now()+Math.random(),num:j.num,turno:j.turno,fecha:j.fecha,
+        mCab:j.mCab,mA5:j.mA5,mA10:j.mA10,monto:j.monto,salio:'pend',ganancia:0,ts:new Date().toISOString()});
+      n++;
+    }
+  });
+  pendConf=[];
+  save(); renderCap();
+  document.getElementById('tabla-box').style.display='none';
+  alert('✅ '+n+' jugada(s) registradas. Cuando salgan los resultados andá a Sorteo.');
+}
+
+// ═══════════════════════════════════════════════
+// SORTEO
+// ═══════════════════════════════════════════════
+function renderSort() {
+  var hoy=new Date().toISOString().split('T')[0];
+  if(!document.getElementById('s-fecha').value) document.getElementById('s-fecha').value=hoy;
+  if(!document.getElementById('tq-fecha').value) document.getElementById('tq-fecha').value=hoy;
+  mostrarPend();
+}
+
+function imagenCargada(input) {
+  if(!input.files||!input.files[0]) return;
+  var r=new FileReader();
+  r.onload=function(e){
+    document.getElementById('img-thumb').src=e.target.result;
+    document.getElementById('img-prev-box').style.display='block';
+    document.getElementById('btn-leer').style.display='block';
+    document.getElementById('img-leido').style.display='none';
+    document.getElementById('img-drop').style.borderColor='var(--acc)';
+  };
+  r.readAsDataURL(input.files[0]);
+}
+
+function leerImagen() {
+  var src=document.getElementById('img-thumb').src;
+  if(!src||src===window.location.href){alert('Subí la imagen primero');return;}
+
+  var turno=document.getElementById('s-turno').value;
+  var fecha=document.getElementById('s-fecha').value;
+  var turnoNombre=TL[turno];
+  var partes=fecha.split('-');
+  var fechaFmt=partes[2]+'/'+partes[1]+'/'+partes[0];
+
+  document.getElementById('img-leyendo').style.display='block';
+  document.getElementById('btn-leer').disabled=true;
+  document.getElementById('btn-leer').textContent='Leyendo...';
+  document.getElementById('img-leido').style.display='none';
+
+  var base64=src.split(',')[1];
+  var mimeMatch=src.match(/data:([^;]+);/);
+  var mime=mimeMatch?mimeMatch[1]:'image/jpeg';
+
+  // Redimensionar imagen antes de enviar (max 800px) para reducir tokens
+  var img=new Image();
+  img.onload=function(){
+    var canvas=document.createElement('canvas');
+    var MAX=800;
+    var w=img.width, h=img.height;
+    if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+    if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
+    canvas.width=w; canvas.height=h;
+    canvas.getContext('2d').drawImage(img,0,0,w,h);
+    var b64=canvas.toDataURL('image/jpeg',0.85).split(',')[1];
+    llamarAPI(b64,'image/jpeg',turno,fecha,turnoNombre,fechaFmt);
+  };
+  img.onerror=function(){ llamarAPI(base64,mime,turno,fecha,turnoNombre,fechaFmt); };
+  img.src=src;
+}
+
+function llamarAPI(base64,mime,turno,fecha,turnoNombre,fechaFmt){
+  // Usa Gemini Flash 2.0 — gratuito, funciona desde el browser sin configuración
+  var GEMINI_KEY='AIzaSyC9nf7TuqJXoq3RtUmFfhDVPgM8XTQR5kI';
+  var url='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+GEMINI_KEY;
+
+  fetch(url,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      contents:[{
+        parts:[
+          {inline_data:{mime_type:mime,data:base64}},
+          {text:'Esta imagen es el extracto de la Quiniela de Buenos Aires, turno '+turnoNombre+'. '
+            +'Listá los primeros 20 números en orden de posición (del 1ro al 20mo). '
+            +'Si los números tienen 4 cifras (ej: 3982), tomá SOLO los últimos 2 dígitos (82). '
+            +'Si tienen 2 cifras, usalos directamente. '
+            +'Respondé ÚNICAMENTE con JSON sin texto ni markdown: '
+            +'{"n":["03","51","18","77","42","88","31","64","09","55","22","47","76","13","90","35","68","04","83","61"]}'}
+        ]
+      }],
+      generationConfig:{maxOutputTokens:200,temperature:0}
+    })
+  })
+  .then(function(r){return r.json();})
+  .then(function(data){
+    document.getElementById('img-leyendo').style.display='none';
+    document.getElementById('btn-leer').disabled=false;
+    document.getElementById('btn-leer').textContent='🔍 LEER IMAGEN AUTOMÁTICAMENTE';
+
+    // Parsear respuesta Gemini
+    var txt='';
+    try{
+      txt=data.candidates[0].content.parts[0].text||'';
+    }catch(e){ mostrarErrorImg('No se pudo leer la imagen. Intentá con otra captura.'); return; }
+
+    var clean=txt.replace(/```json|```/g,'').trim();
+    // Extraer JSON aunque tenga texto alrededor
+    var m=clean.match(/\{[\s\S]*\}/);
+    if(m) clean=m[0];
+    var p;
+    try{ p=JSON.parse(clean); }catch(e){ mostrarErrorImg('No pude interpretar los números. Intentá con una captura más nítida.'); return; }
+
+    var nums=(p.n||p.nums||[]).slice(0,20).map(function(n){
+      var v=parseInt(n); return isNaN(v)?'00':(''+v).padStart(2,'0');
+    }).filter(function(n){return n!=='00'||true;});
+
+    if(nums.length<5){ mostrarErrorImg('No encontré suficientes números. Usá una captura más clara.'); return; }
+
+    document.getElementById('img-leido').style.display='block';
+    document.getElementById('img-leido').className='al al-s';
+    document.getElementById('img-leido').innerHTML=
+      '✅ '+nums.length+' números leídos: <strong>'+nums.slice(0,10).join(' · ')+'...</strong>';
+    document.getElementById('s-nums').value=nums.join(', ');
+    procesarNums(turno,fecha,nums,turnoNombre,fechaFmt);
+  })
+  .catch(function(e){
+    document.getElementById('img-leyendo').style.display='none';
+    document.getElementById('btn-leer').disabled=false;
+    document.getElementById('btn-leer').textContent='🔍 LEER IMAGEN AUTOMÁTICAMENTE';
+    mostrarErrorImg('Sin conexión. Ingresá los números en el campo de abajo.');
+  });
+}
+
+function mostrarErrorImg(msg){
+  document.getElementById('img-leido').style.display='block';
+  document.getElementById('img-leido').className='al al-r';
+  document.getElementById('img-leido').textContent='⚠️ '+msg;
+}
+
+function verificar() {
+  var turno=document.getElementById('s-turno').value;
+  var fecha=document.getElementById('s-fecha').value;
+  var raw=(document.getElementById('s-nums').value||'').trim();
+  if(!fecha){alert('Elegí una fecha');return;}
+  if(!raw){alert('Ingresá los números del extracto');return;}
+  var nums=parsearNums(raw);
+  if(nums.length<5){alert('Necesitás al menos 5 números válidos');return;}
+  var partes=fecha.split('-');
+  var fechaFmt=partes[2]+'/'+partes[1]+'/'+partes[0];
+  document.getElementById('s-nums').value='';
+  procesarNums(turno, fecha, nums, TL[turno], fechaFmt);
+}
+
+function parsearNums(raw) {
+  var nums=[];
+  if(raw.indexOf(',')>=0) nums=raw.split(',');
+  else if(raw.indexOf(' ')>=0) nums=raw.split(' ');
+  else { for(var i=0;i+1<=raw.length;i+=2) nums.push(raw.substring(i,i+2)); }
+  return nums.map(function(n){return n.trim();})
+    .filter(function(n){return n!==''&&!isNaN(n);})
+    .map(function(n){return (''+parseInt(n)).padStart(2,'0');});
+}
+
+function procesarNums(turno, fecha, nums, turnoNombre, fechaFmt) {
+  // Guardar sorteo
+  if(!S.sorteos.some(function(s){return s.turno===turno&&s.fecha===fecha;})){
+    S.sorteos.push({turno:turno,fecha:fecha,nums:nums,ts:new Date().toISOString()});
+  }
+  // Resolver pendientes
+  S.jugadas.forEach(function(j){
+    if(j.turno!==turno||j.fecha!==fecha||j.salio!=='pend') return;
+    var pos=nums.indexOf(j.num);
+    if(pos<0){ j.salio='no'; j.ganancia=0; j.detalle='No salió'; }
+    else {
+      var p=pos+1;
+      var g=0;
+      if(p===1)     g=(j.mCab||S.mCab)*MCAB+(j.mA5||S.mA5)*MA5+(j.mA10||S.mA10)*MA10;
+      else if(p<=5) g=(j.mA5||S.mA5)*MA5+(j.mA10||S.mA10)*MA10;
+      else if(p<=10)g=(j.mA10||S.mA10)*MA10;
+      j.salio='si'; j.ganancia=g; j.posicion=p;
+      j.detalle=p===1?'CABEZA (pos 1)':p<=5?'A los 5 (pos '+p+')':p<=10?'A los 10 (pos '+p+')':'Pos '+p;
+    }
+  });
+  save(); renderCap(); mostrarPend();
+
+  // Mostrar resultado
+  var misJug=S.jugadas.filter(function(j){return j.fecha===fecha&&j.turno===turno;});
+  var gane=misJug.filter(function(j){return j.salio==='si';});
+  var perdi=misJug.filter(function(j){return j.salio==='no';});
+
+  var html='<div style="background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:14px;margin-bottom:10px">';
+  html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">'+
+    '<span class="bdg '+turno+'">'+turnoNombre+'</span>'+
+    '<span style="font-family:DM Mono,monospace;font-size:11px;color:var(--mut)">'+fechaFmt+'</span></div>';
+
+  // Cabeza
+  html+='<div style="text-align:center;padding:10px 0;border-bottom:1px solid var(--brd);margin-bottom:10px">'+
+    '<div style="font-size:9px;color:var(--mut);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Cabeza del sorteo</div>'+
+    '<div style="font-family:Bebas Neue,sans-serif;font-size:52px;color:var(--acc);line-height:1">'+nums[0]+'</div></div>';
+
+  // Mis jugadas
+  if(misJug.length){
+    misJug.forEach(function(j){
+      var col=j.salio==='si'?'var(--grn)':'var(--red)';
+      var icon=j.salio==='si'?'✅':'❌';
+      var pos=nums.indexOf(j.num);
+      var posT=pos<0?'No salió':'Posición '+(pos+1);
+      html+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--brd)">'+
+        '<div style="font-family:Bebas Neue,sans-serif;font-size:34px;color:var(--acc);line-height:1;min-width:46px">'+j.num+'</div>'+
+        '<div style="flex:1">'+
+          '<div style="font-size:13px;font-weight:700;color:'+col+'">'+icon+' '+posT+'</div>'+
+          '<div style="font-size:11px;color:var(--mut)">'+j.detalle+'</div></div>'+
+        '<div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:'+col+'">'+
+          (j.salio==='si'?'+$'+fmt(j.ganancia):'-$'+fmt(j.monto))+'</div></div>';
+    });
+  }
+
+  if(gane.length){
+    var tg=gane.reduce(function(a,j){return a+(j.ganancia||0);},0);
+    html+='<div style="margin-top:10px;padding:10px;background:rgba(39,174,96,.12);border:1px solid rgba(39,174,96,.3);border-radius:8px">'+
+      '<div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--grn)">GANANCIA: +$'+fmt(tg)+'</div>'+
+      '<div style="font-size:11px;color:var(--mut)">Capital: $'+fmt(capActual())+'</div></div>';
+  } else if(perdi.length){
+    var tp=perdi.reduce(function(a,j){return a+j.monto;},0);
+    html+='<div style="margin-top:10px;padding:10px;background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.25);border-radius:8px">'+
+      '<div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:var(--red)">PERDISTE: -$'+fmt(tp)+'</div>'+
+      '<div style="font-size:11px;color:var(--mut)">Capital: $'+fmt(capActual())+'</div></div>';
+  }
+
+  // Extracto
+  html+='<div style="margin-top:12px"><div style="font-size:9px;color:var(--mut);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Extracto completo</div><div>';
+  nums.forEach(function(n,i){
+    var esMio=misJug.some(function(j){return j.num===n;});
+    var gano=misJug.some(function(j){return j.num===n&&j.salio==='si';});
+    var cls=gano?' match':'';
+    html+='<span class="vn'+cls+'">'+(i+1)+':'+n+'</span>';
+  });
+  html+='</div></div></div>';
+
+  var vr=document.getElementById('ver-res');
+  vr.style.display='block';
+  vr.innerHTML=html;
+}
+
+function mostrarPend() {
+  var pend=S.jugadas.filter(function(j){return j.salio==='pend';});
+  var pc=document.getElementById('pend-card');
+  var pl=document.getElementById('pend-list');
+  pc.style.display='block';
+  if(!pend.length){ pl.innerHTML='<div class="emp">Sin jugadas pendientes ✅</div>'; return; }
+  pl.innerHTML=pend.map(function(j){
+    return '<div style="background:var(--surf);border:1px solid var(--brd);border-radius:10px;padding:11px;margin-bottom:8px">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
+      '<div class="jnum">'+j.num+'</div>'+
+      '<div><span class="bdg '+j.turno+'">'+TL[j.turno]+'</span>'+
+      '<div class="jfec">'+j.fecha+' · $'+fmt(j.monto)+'</div></div>'+
+      '<div style="margin-left:auto;font-size:12px;color:var(--mut)">⏳</div></div>'+
+      '<div class="res-btns">'+
+      '<button class="btn-g" onclick="marcar(\''+j.id+'\',\'si\')">✅ GANÓ</button>'+
+      '<button class="btn-p" onclick="marcar(\''+j.id+'\',\'no\')">❌ PERDIÓ</button>'+
+      '</div></div>';
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+// MARCAR RESULTADO
+// ═══════════════════════════════════════════════
+function marcar(id, res) {
+  var j=null;
+  for(var i=0;i<S.jugadas.length;i++){if(String(S.jugadas[i].id)===String(id)){j=S.jugadas[i];break;}}
+  if(!j) return;
+  if(res==='no'){
+    j.salio='no'; j.ganancia=0; j.detalle='No salió';
+    save(); renderCap(); mostrarPend(); renderHist(); return;
+  }
+  // Modal con 3 opciones
+  var mC=j.mCab||S.mCab, mA5=j.mA5||S.mA5, mA10=j.mA10||S.mA10;
+  var gC=mC*MCAB+mA5*MA5+mA10*MA10;
+  var g5=mA5*MA5+mA10*MA10;
+  var g10=mA10*MA10;
+  var jid=String(j.id);
+
+  var cont=document.getElementById('gan-cont');
+  cont.innerHTML='';
+
+  var tit=document.createElement('div');
+  tit.style.cssText='font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--acc);margin-bottom:4px;letter-spacing:2px';
+  tit.textContent='DONDE SALIO EL '+j.num+'?';
+  cont.appendChild(tit);
+
+  var sub=document.createElement('div');
+  sub.style.cssText='font-size:11px;color:var(--mut);margin-bottom:14px';
+  sub.textContent='Seleccioná la posición para calcular la ganancia exacta.';
+  cont.appendChild(sub);
+
+  var opts=[
+    {label:'1ª — CABEZA',        sub:'Cab ×70 + A5 ×14 + A10 ×7', gan:gC, pos:1,  color:'var(--acc)', bg:'rgba(245,196,64,.1)', brd:'var(--acc)'},
+    {label:'2ª a 5ª — A LOS 5',  sub:'A5 ×14 + A10 ×7',           gan:g5, pos:2,  color:'var(--grn)', bg:'rgba(39,174,96,.08)', brd:'rgba(39,174,96,.35)'},
+    {label:'6ª a 10ª — A LOS 10',sub:'Solo A10 ×7',                gan:g10,pos:6, color:'var(--mat)', bg:'rgba(74,158,255,.08)', brd:'rgba(74,158,255,.3)'}
+  ];
+  opts.forEach(function(o){
+    var b=document.createElement('button');
+    b.style.cssText='width:100%;margin-bottom:8px;padding:12px;background:'+o.bg+';border:2px solid '+o.brd+';border-radius:10px;cursor:pointer;text-align:left;display:block';
+    b.innerHTML='<div style="font-family:Bebas Neue,sans-serif;font-size:15px;color:'+o.color+';letter-spacing:1px">'+o.label+'</div>'+
+      '<div style="font-size:10px;color:var(--mut);margin-top:2px">'+o.sub+'</div>'+
+      '<div style="font-family:Bebas Neue,sans-serif;font-size:24px;color:var(--grn);margin-top:3px">+$'+fmt(o.gan)+'</div>';
+    (function(pos,gan){
+      b.onclick=function(){ confirmarGan(jid,pos,gan); };
+    })(o.pos, o.gan);
+    cont.appendChild(b);
+  });
+
+  var bc=document.createElement('button');
+  bc.style.cssText='width:100%;padding:10px;background:transparent;border:1px solid var(--brd);border-radius:8px;color:var(--mut);font-family:DM Sans,sans-serif;font-size:12px;cursor:pointer';
+  bc.textContent='Cancelar';
+  bc.onclick=function(){ document.getElementById('ov-gan').classList.remove('show'); };
+  cont.appendChild(bc);
+
+  document.getElementById('ov-gan').classList.add('show');
+}
+
+function confirmarGan(id, pos, gan) {
+  document.getElementById('ov-gan').classList.remove('show');
+  var j=null;
+  for(var i=0;i<S.jugadas.length;i++){if(String(S.jugadas[i].id)===String(id)){j=S.jugadas[i];break;}}
+  if(!j) return;
+  j.salio='si'; j.ganancia=gan; j.posicion=pos;
+  j.detalle=pos===1?'CABEZA (+cab+a5+a10)':pos<=5?'A los 5 (+a5+a10)':'A los 10';
+  save(); renderCap(); mostrarPend(); renderHist();
+  alert('✅ ¡GANASTE!\n'+j.detalle+'\n+$'+fmt(gan)+'\nCapital: $'+fmt(capActual()));
+}
+
+// ═══════════════════════════════════════════════
+// TICKET QUINIELERO
+// ═══════════════════════════════════════════════
+function genTicketQ() {
+  var fecha=document.getElementById('tq-fecha').value;
+  if(!fecha){alert('Elegí una fecha');return;}
+  var js=S.jugadas.filter(function(j){return j.fecha===fecha;});
+  if(!js.length){alert('No hay jugadas para esa fecha');return;}
+  var total=js.reduce(function(a,j){return a+j.monto;},0);
+  var partes=fecha.split('-');
+  var fechaFmt=partes[2]+'/'+partes[1]+'/'+partes[0];
+  var hora=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+  var filas='';
+  js.forEach(function(j){
+    filas+='<div class="tq-row">'+
+      '<div class="tq-num">'+j.num+'</div>'+
+      '<div class="tq-info">'+
+        '<span class="tq-turn '+j.turno+'">'+TL[j.turno]+'</span>'+
+        (j.mCab>0?'<div class="tq-linea"><span class="tipo">A la Cabeza</span><span class="imp">$'+fmt(j.mCab)+'</span></div>':'')+
+        (j.mA5>0?'<div class="tq-linea"><span class="tipo">A los 5</span><span class="imp">$'+fmt(j.mA5)+'</span></div>':'')+
+        (j.mA10>0?'<div class="tq-linea"><span class="tipo">A los 10</span><span class="imp">$'+fmt(j.mA10)+'</span></div>':'')+
+        '<div class="tq-linea" style="margin-top:3px;border-top:1px dashed #ddd;padding-top:3px"><span class="tipo" style="font-weight:700">Subtotal</span><span class="imp">$'+fmt(j.monto)+'</span></div>'+
+      '</div></div>';
+  });
+  document.getElementById('tq-cont').innerHTML=
+    '<div class="tq-head"><div class="tq-logo">🎰 QUINIELA</div><div class="tq-sub">Ciudad de Buenos Aires</div><div class="tq-fecha">'+fechaFmt+' · '+hora+' hs</div></div>'+
+    '<div class="tq-body">'+filas+'</div>'+
+    '<div class="tq-tot-box"><div><div class="lbl">Total a depositar</div></div><div class="val">$'+fmt(total)+'</div></div>'+
+    '<div class="tq-foot">Solo para uso personal</div>';
+  document.getElementById('ov-q').style.display='block';
+  document.body.style.overflow='hidden';
+}
+
+// ═══════════════════════════════════════════════
+// HISTORIAL
+// ═══════════════════════════════════════════════
+function filtrar(f, el) {
+  filtroH=f;
+  var cs=document.querySelectorAll('#pnl-hist .fc');
+  for(var i=0;i<cs.length;i++) cs[i].classList.remove('on');
+  el.classList.add('on');
+  renderHist();
+}
+
+function renderHist() {
+  var js=S.jugadas.slice().reverse();
+  if(filtroH==='pend') js=js.filter(function(j){return j.salio==='pend';});
+  else if(filtroH==='win') js=js.filter(function(j){return j.salio==='si';});
+  else if(filtroH!=='todos') js=js.filter(function(j){return j.turno===filtroH;});
+  if(!js.length){ document.getElementById('hist-list').innerHTML='<div class="emp">Sin jugadas</div>'; return; }
+  document.getElementById('hist-list').innerHTML=js.map(function(j){
+    var rc=j.salio==='si'?'win':j.salio==='no'?'lose':'pend';
+    var rt=j.salio==='si'?'+$'+fmt(j.ganancia):j.salio==='no'?'-$'+fmt(j.monto):'⏳';
+    var det=j.detalle?'<div class="jdet">'+j.detalle+'</div>':'';
+    var btns=j.salio==='pend'?
+      '<div class="res-btns"><button class="btn-g" onclick="marcar(\''+j.id+'\',\'si\')">✅ GANÓ</button><button class="btn-p" onclick="marcar(\''+j.id+'\',\'no\')">❌ PERDIÓ</button></div>':'';
+    return '<div class="ji"><div class="jirow">'+
+      '<div class="jnum">'+j.num+'</div>'+
+      '<div class="jinf"><span class="bdg '+j.turno+'">'+TL[j.turno]+'</span>'+
+      '<div class="jfec">'+j.fecha+' · $'+fmt(j.monto)+'</div>'+det+'</div>'+
+      '<div class="jres '+rc+'">'+rt+'</div>'+
+      '<button class="delbtn" onclick="eliminar(\''+j.id+'\')">🗑</button>'+
+      '</div>'+btns+'</div>';
+  }).join('');
+}
+
+function eliminar(id) {
+  if(!confirm('¿Eliminar?')) return;
+  S.jugadas=S.jugadas.filter(function(j){return String(j.id)!==String(id);});
+  save(); renderHist(); renderCap();
+}
+
+// ═══════════════════════════════════════════════
+// TICKET HISTORIAL
+// ═══════════════════════════════════════════════
+function genTicketHoy() {
+  var hoy=new Date().toISOString().split('T')[0];
+  var js=S.jugadas.filter(function(j){return j.fecha===hoy;});
+  if(!js.length){ alert('Sin jugadas hoy'); return; }
+  var ap=js.reduce(function(a,j){return a+j.monto;},0);
+  var ga=js.reduce(function(a,j){return a+(j.ganancia||0);},0);
+  var ne=ga-ap;
+  var capAct=capActual();
+  var hora=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+  var filas='';
+  ['mat','vesp','noc'].forEach(function(t){
+    var jt=js.filter(function(j){return j.turno===t;});
+    jt.forEach(function(j){
+      var rc=j.salio==='si'?'win':j.salio==='no'?'lose':'pend';
+      var rt=j.salio==='si'?'✅ +$'+fmt(j.ganancia):j.salio==='no'?'❌':' ⏳';
+      filas+='<tr>'+
+        '<td><span class="tk-turn '+t+'">'+TL[t].substring(0,3).toUpperCase()+'</span></td>'+
+        '<td><span class="tk-num">'+j.num+'</span></td>'+
+        '<td><span class="tk-imp">$'+fmt(j.mCab||S.mCab)+'</span></td>'+
+        '<td><span class="tk-imp">$'+fmt(j.mA5||S.mA5)+'</span></td>'+
+        '<td><span class="tk-imp">$'+fmt(j.mA10||S.mA10)+'</span></td>'+
+        '<td><strong style="font-family:DM Mono,monospace;font-size:12px">$'+fmt(j.monto)+'</strong></td>'+
+        '<td><span class="tk-res '+rc+'">'+rt+'</span></td>'+
+        '</tr>';
+    });
+  });
+  document.getElementById('tic-cont').innerHTML=
+    '<div class="tk-head"><div class="tk-logo">🎰 QUINIELA PRO</div><div class="tk-sub">Ciudad de Buenos Aires</div><div class="tk-date">'+hoy+' · '+hora+' hs</div></div>'+
+    '<div class="tk-body"><table class="tk-tbl"><tr><th>Turno</th><th>Nº</th><th>Cab ×70</th><th>A5 ×14</th><th>A10 ×7</th><th>Total</th><th>Res.</th></tr>'+filas+'</table></div>'+
+    '<div class="tk-tot"><div class="tk-tr"><span>Total apostado</span><span>$'+fmt(ap)+'</span></div>'+
+    '<div class="tk-tr"><span>Ganado</span><span style="color:'+(ga>0?'#27ae60':'#aaa')+'">$'+fmt(ga)+'</span></div>'+
+    '<div class="tk-tr"><span>Neto</span><span class="'+(ne>=0?'pnet':'nnet')+'">'+(ne>=0?'+':'')+'$'+fmt(Math.abs(ne))+'</span></div></div>'+
+    (S.capital>0?'<div class="tk-cap"><div class="tk-tr"><span>Capital inicial</span><span>$'+fmt(S.capital)+'</span></div>'+
+    '<div class="tk-tr"><span>Capital actual</span><span class="'+(capAct>=S.capital?'pnet':'nnet')+'">$'+fmt(capAct)+'</span></div></div>':'')+
+    '<div class="tk-foot">Ticket personal · No es comprobante oficial</div>';
+  document.getElementById('ov-tick').style.display='block';
+  document.body.style.overflow='hidden';
+}
+
+// ═══════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════
+function cerrar(id) {
+  document.getElementById(id).style.display='none';
+  document.body.style.overflow='';
+}
+function compartirTick() {
+  var txt=document.getElementById('tic-cont').innerText;
+  if(navigator.share) navigator.share({title:'Ticket Quiniela',text:txt}).catch(function(){});
+  else if(navigator.clipboard) navigator.clipboard.writeText(txt).then(function(){alert('✅ Copiado');});
+  else alert(txt);
+}
+function compartirTQ() {
+  var txt=document.getElementById('tq-cont').innerText;
+  if(navigator.share) navigator.share({title:'Quiniela',text:txt}).catch(function(){});
+  else if(navigator.clipboard) navigator.clipboard.writeText(txt).then(function(){alert('✅ Copiado');});
+  else alert(txt);
+}
+function exportCSV() {
+  if(!S.jugadas.length){alert('Sin movimientos');return;}
+  var rows=S.jugadas.map(function(j){
+    return [j.fecha,TL[j.turno],j.num,j.monto,j.mCab,j.mA5,j.mA10,
+      j.salio==='si'?'Gano':j.salio==='no'?'Perdio':'Pendiente',j.ganancia||0,j.detalle||''].join(',');
+  });
+  var csv=['Fecha,Turno,Numero,Monto,Cab,A5,A10,Resultado,Ganancia,Detalle'].concat(rows).join('\n');
+  var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download='quiniela.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+function copiarMov() {
+  var txt='QUINIELA PRO\nCapital inicial: $'+fmt(S.capital)+'\nCapital actual: $'+fmt(capActual())+'\n'+'─'.repeat(30)+'\n';
+  S.jugadas.forEach(function(j){
+    var r=j.salio==='si'?'GANO +$'+fmt(j.ganancia):j.salio==='no'?'PERDIO -$'+fmt(j.monto):'PENDIENTE';
+    txt+=j.fecha+' | '+TL[j.turno]+' | Nº'+j.num+' | $'+fmt(j.monto)+' | '+r+'\n';
+  });
+  if(navigator.clipboard) navigator.clipboard.writeText(txt).then(function(){alert('✅ Copiado');}).catch(function(){alert(txt);});
+  else alert(txt);
+}
+function resetTodo() {
+  if(!confirm('⚠️ Borrar TODAS las jugadas y capital. ¿Seguro?')) return;
+  if(!confirm('Última confirmación')) return;
+  S={capital:0,mCab:200,mA5:200,mA10:600,jugadas:[],sorteos:[]};
+  save(); renderCap(); alert('Datos borrados.');
+}
+function fmt(n) { return Math.round(n).toLocaleString('es-AR'); }
+
+// ═══════════════════════════════════════════════
+// INICIO
+// ═══════════════════════════════════════════════
+load();
+document.getElementById('atr-txt').textContent='Atr: '+ATR_FECHA;
+var hoy=new Date().toISOString().split('T')[0];
+document.getElementById('dia-fecha').value=hoy;
+document.getElementById('s-fecha').value=hoy;
+document.getElementById('tq-fecha').value=hoy;
+renderCap();
+// Fetch atrasados en background
+fetchAtr();
+</script>
+</body>
+</html>
