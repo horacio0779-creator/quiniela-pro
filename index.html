@@ -545,7 +545,7 @@
   </div>
   <canvas id="waveCanvas"></canvas>
   <button class="btn btn-primary" id="processBtn" disabled>🔮 Generar WAV subliminal</button>
-  <button class="btn btn-dl" id="downloadBtn">⬇ Descargar WAV</button>
+  <button class="btn btn-dl" id="downloadBtn" onclick="descargarWav()">⬇ Descargar WAV</button>
 </div>
 
 <footer>Web Audio API · Todo el procesamiento es local · No se sube nada a ningún servidor</footer>
@@ -789,9 +789,9 @@ processBtn.addEventListener('click', async () => {
 function tick() { return new Promise(r => setTimeout(r, 0)); }
 
 // --- Download ---
-downloadBtn.addEventListener('click', async () => {
-  if (!wavBlob) return;
-  const fName = `subliminal_x${reps}_${carrierHz}hz.wav`;
+async function descargarWav() {
+  if (!wavBlob) { alert('Primero generá el WAV'); return; }
+  const fName = `subliminal_${carrierHz}hz.wav`;
 
   // Web Share API (Android nativo)
   if (navigator.canShare) {
@@ -816,7 +816,9 @@ downloadBtn.addEventListener('click', async () => {
   a.click();
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 3000);
-});
+}
+
+downloadBtn.addEventListener('click', descargarWav);
 
 
 </script>
